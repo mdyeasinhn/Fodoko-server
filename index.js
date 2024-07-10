@@ -1,5 +1,5 @@
 const express = require('express');
-const { MongoClient, ServerApiVersion } = require('mongodb');
+const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
 const cors = require('cors');
 
 require('dotenv').config();
@@ -31,14 +31,34 @@ const client = new MongoClient(uri, {
 
 async function run() {
   try {
-    // Connect the client to the server	(optional starting in v4.7)
+    const itemsCollection = client.db('foodoko').collection('items')
+    const ordersCollection = client.db('foodoko').collection("orders")
+
+       // Get all item data form db 
+       app.get('/items', async (req, res) => {
+        const result = await itemsCollection.find().toArray();
+        res.send(result);
+    })
+    // Get single item data from db
+    app.get('/item/:id',async(req, res) =>{
+      const  id = req.params.id
+      const query = { _id : new ObjectId(id)}
+      const result = await itemsCollection.findOne(query)
+      res.send(result)
+    })
+    // Save a order data in db
+    app.post('/order', async(req, res)=>{
+      const orderData = req.body;
+      const result = await ordersCollection.insertOne(orderData);
+      res.send(result)
+    })
 
     // Send a ping to confirm a successful connection
     await client.db("admin").command({ ping: 1 });
     console.log("Pinged your deployment. You successfully connected to MongoDB!");
   } finally {
     // Ensures that the client will close when you finish/error
-        
+
   }
 }
 run().catch(console.dir);
