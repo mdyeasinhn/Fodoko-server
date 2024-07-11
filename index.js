@@ -47,6 +47,13 @@ async function run() {
       const result = await itemsCollection.findOne(query)
       res.send(result)
     })
+    // Get data for update
+    app.get('/update/:id', async (req, res) => {
+      const id = req.params.id
+      const query = { _id: new ObjectId(id) }
+      const result = await foodsCollection.findOne(query)
+      res.send(result)
+    })
     // Save a order data in db
     app.post('/order', async (req, res) => {
       const orderData = req.body;
