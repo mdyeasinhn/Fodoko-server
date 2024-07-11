@@ -54,6 +54,21 @@ async function run() {
       const result = await foodsCollection.findOne(query)
       res.send(result)
     })
+    // update a data in db
+    app.put('/foods/:id', async(req, res)=>{
+      const id = req.params.id;
+      const foodData = req.body;
+      const query = {_id : new ObjectId(id)};
+      const options = {upsert : true};
+      const updateDoc = {
+        $set: {
+          ...foodData,
+        },
+      }
+      const result = await foodsCollection.updateOne(query, updateDoc, options);
+      res.send(result)
+    })
+
     // Save a order data in db
     app.post('/order', async (req, res) => {
       const orderData = req.body;
