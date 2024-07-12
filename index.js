@@ -95,6 +95,13 @@ async function run() {
       const result = await foodsCollection.deleteOne(query)
       res.send(result)
     })
+        // Get all orders for a user by email from db
+    app.get('/orders/:email', async(req, res)=>{
+      const email = req.params.email;
+      const query = {email};
+      const result = await ordersCollection.find(query).toArray();
+      res.send(result);
+    })
 
     // Send a ping to confirm a successful connection
     await client.db("admin").command({ ping: 1 });
